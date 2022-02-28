@@ -2,34 +2,41 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 //! # Cache layer for `tower::Service`s
-//! 
+//!
 //! [`CacheLayer`] is a tower Layer that provides caches for `Service`s by using
 //! another service to handle the cache. This allows the usage of asynchronous
 //! and external caches.
-//! 
+//!
 //! ## Usage
-//! 
-//! ```ignore
-//! use tower::ServiceBuilder;
-//! use tower_cache::CacheLayer;
-//! 
+//!
+//! ```rust
+//! use std::convert::Infallible;
+//! use tower::{ServiceBuilder, service_fn};
+//! use tower_cache::{
+//!     CacheLayer,
+//!     lru::LruProvider,
+//! };
+//! async fn handler(req: String) -> Result<String, Infallible> {
+//!     Ok(req.to_uppercase())
+//! }
+//!
 //! // Initialize the cache provider service
-//! let my_cache_provider = MyCacheProvider::default();
-//! 
+//! let lru_provider = LruProvider::<String, String>::new(20);
+//!
 //! // Initialize the service
-//! let my_service = MyService::new();
-//! 
+//! let my_service = service_fn(handler);
+//!
 //! // Wrap the service with CacheLayer.
 //! let my_service = ServiceBuilder::new()
-//!     .layer(CacheLayer::new(my_cache_provider))
-//!     .service(my_service);
+//!     .layer(CacheLayer::<_, String>::new(lru_provider))
+//!     .service(handler);
 //! ```
-//! 
+//!
 //! ## Creating cache providers
-//! 
+//!
 //! A cache provider is a [`tower::Service`] that takes a [`ProviderRequest`]
 //! as request and returns a [`ProviderResponse`].
-//! 
+//!
 
 use std::{
     error, fmt,
@@ -40,8 +47,12 @@ use std::{
 };
 use tower::{Layer, Service};
 
+#[cfg(feature = "lru")]
+#[cfg_attr(docsrs, doc(cfg(feature = "lru")))]
+pub mod lru;
+
 /// Layer that adds cache to a [`tower::Service`]
-/// 
+///
 /// This works by using a cache provider service that takes a [`ProviderRequest`]
 /// and returns a [`ProviderResponse`].
 pub struct CacheLayer<'a, P, R> {
