@@ -1,13 +1,15 @@
 [package]
-name = "tower-idempotency"
+name = "tower-cache"
 version = "0.1.0"
 edition = "2021"
 authors = ["nicolas.moutschen@gmail.com"]
 license = "MIT"
-repository = "https://github.com/nmoutschen/tower-idempotency"
+repository = "https://github.com/nmoutschen/tower-cache"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tower = "0.4"
-tokio = { version = "1", features = ["sync"] }
+tower = { version = "0.4", features = ["util"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
