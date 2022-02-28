@@ -16,3 +16,7 @@ tokio = { version = "1", features = ["full"] }
 
 [features]
 default = ["lru"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
