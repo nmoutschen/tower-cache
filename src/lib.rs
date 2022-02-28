@@ -56,7 +56,10 @@ where
     S::Response: Clone + Send + 'a,
     S::Error: Into<Box<dyn error::Error + Send + Sync>>,
     S::Future: Send + 'a,
-    P: Service<ProviderRequest<R, S::Response>, Response = ProviderResponse<S::Response>> + Clone + Send + 'a,
+    P: Service<ProviderRequest<R, S::Response>, Response = ProviderResponse<S::Response>>
+        + Clone
+        + Send
+        + 'a,
     P::Response: Send + 'a,
     P::Error: Into<Box<dyn error::Error + Send + Sync>> + Send,
     P::Future: Send + 'a,
@@ -75,9 +78,9 @@ where
     fn call(&mut self, request: R) -> Self::Future {
         let mut provider = self.provider.clone();
         let mut inner = self.inner.clone();
-
         let idem_fut = self.provider.call(ProviderRequest::Get(request.clone()));
-        let fut = Box::pin(async move {
+
+        Box::pin(async move {
             let res = match idem_fut.await {
                 Ok(ProviderResponse::Found(res)) => Ok(res),
                 Ok(ProviderResponse::NotFound) => {
@@ -103,9 +106,7 @@ where
             };
 
             res
-        });
-
-        fut
+        })
     }
 }
 
@@ -164,7 +165,7 @@ mod tests {
         future::ready,
         sync::{Arc, Mutex},
     };
-    use tower::{service_fn, ServiceBuilder, Service};
+    use tower::{service_fn, Service, ServiceBuilder};
 
     #[derive(Clone, Default, Debug)]
     struct SimpleCache {
@@ -182,11 +183,9 @@ mod tests {
 
         fn call(&mut self, request: ProviderRequest<String, String>) -> Self::Future {
             Box::pin(ready(match request {
-                ProviderRequest::Get(req) => {
-                    match self.cache.lock().unwrap().get(&req) {
-                        Some(res) => Ok(ProviderResponse::Found(res.clone())),
-                        None => Ok(ProviderResponse::NotFound),
-                    }
+                ProviderRequest::Get(req) => match self.cache.lock().unwrap().get(&req) {
+                    Some(res) => Ok(ProviderResponse::Found(res.clone())),
+                    None => Ok(ProviderResponse::NotFound),
                 },
                 ProviderRequest::Insert(req, res) => {
                     self.cache.lock().unwrap().insert(req, res.clone());
@@ -196,14 +195,14 @@ mod tests {
         }
     }
 
+    async fn service(req: String) -> Result<String, Error> {
+        Ok(req.to_uppercase())
+    }
+
     #[tokio::test]
     async fn test_insert() -> Result<(), Error> {
         let cache = SimpleCache::default();
         let cache_layer = CacheLayer::<_, String>::new(cache.clone());
-
-        async fn service(req: String) -> Result<String, Error> {
-            Ok(req.to_uppercase())
-        }
 
         let mut service = ServiceBuilder::new()
             .layer(cache_layer)
@@ -216,8 +215,30 @@ mod tests {
         {
             let inner_cache = cache.cache.lock().unwrap();
             assert_eq!(inner_cache.len(), 1);
-            assert_eq!(inner_cache.get(&String::from("Hello")), Some(&String::from("HELLO")));
+            assert_eq!(
+                inner_cache.get(&String::from("Hello")),
+                Some(&String::from("HELLO"))
+            );
         }
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_get() -> Result<(), Error> {
+        let cache = SimpleCache::default();
+        {
+            let mut inner_cache = cache.cache.lock().unwrap();
+            inner_cache.insert(String::from("Hello"), String::from("hello"));
+        }
+        let cache_layer = CacheLayer::<_, String>::new(cache.clone());
+
+        let mut service = ServiceBuilder::new()
+            .layer(cache_layer)
+            .service(service_fn(service));
+
+        let res = service.call(String::from("Hello")).await?;
+        assert_eq!(res, String::from("hello"));
 
         Ok(())
     }
