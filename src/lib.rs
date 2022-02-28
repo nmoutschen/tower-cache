@@ -1,7 +1,35 @@
 #![warn(missing_docs, unreachable_pub)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-//! Cache layer for `tower::Service`s
+//! # Cache layer for `tower::Service`s
+//! 
+//! [`CacheLayer`] is a tower Layer that provides caches for `Service`s by using
+//! another service to handle the cache. This allows the usage of asynchronous
+//! and external caches.
+//! 
+//! ## Usage
+//! 
+//! ```ignore
+//! use tower::ServiceBuilder;
+//! use tower_cache::CacheLayer;
+//! 
+//! // Initialize the cache provider service
+//! let my_cache_provider = MyCacheProvider::default();
+//! 
+//! // Initialize the service
+//! let my_service = MyService::new();
+//! 
+//! // Wrap the service with CacheLayer.
+//! let my_service = ServiceBuilder::new()
+//!     .layer(CacheLayer::new(my_cache_provider))
+//!     .service(my_service);
+//! ```
+//! 
+//! ## Creating cache providers
+//! 
+//! A cache provider is a [`tower::Service`] that takes a [`ProviderRequest`]
+//! as request and returns a [`ProviderResponse`].
+//! 
 
 use std::{
     error, fmt,
@@ -12,14 +40,17 @@ use std::{
 };
 use tower::{Layer, Service};
 
-/// Layer that adds cache to a `tower::Service`
+/// Layer that adds cache to a [`tower::Service`]
+/// 
+/// This works by using a cache provider service that takes a [`ProviderRequest`]
+/// and returns a [`ProviderResponse`].
 pub struct CacheLayer<'a, P, R> {
     provider: P,
     _phantom: PhantomData<&'a R>,
 }
 
 impl<'a, P, R> CacheLayer<'a, P, R> {
-    /// Create a new `CacheLayer`
+    /// Create a new [`CacheLayer`]
     pub fn new(provider: P) -> Self {
         Self {
             provider,
@@ -82,14 +113,20 @@ where
 
         Box::pin(async move {
             let res = match idem_fut.await {
+                // If we have a response in the cache, we can immediately return without
+                // calling the inner service.
                 Ok(ProviderResponse::Found(res)) => Ok(res),
+                // Response not found - we need to call the inner service and update the
+                // cache.
                 Ok(ProviderResponse::NotFound) => {
+                    // Fetch the response from the inner service.
                     let response = inner
                         .call(request.clone())
                         .await
                         .map_err(|e| Error::ServiceError(e.into()));
                     match response {
                         Ok(res) => {
+                            // Store the response in the cache provider.
                             let new_res = res.clone();
                             match provider
                                 .call(ProviderRequest::Insert(request, new_res))
@@ -128,7 +165,7 @@ pub enum ProviderResponse<Res> {
     NotFound,
 }
 
-/// Errors from the Cache layer
+/// Error returned by the [`CacheLayer`]
 ///
 /// As errors can come from both the cache provider, the inner service, or
 /// the layer itself, this uses a custom enum to propagate errors.
