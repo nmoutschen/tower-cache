@@ -34,6 +34,10 @@
 //! // Call the service
 //! let res = my_service.call("Hello".to_string()).await.unwrap();
 //! assert_eq!(res, "HELLO".to_string());
+//!
+//! // Calling the service again will use the cache instead
+//! let res = my_service.call("Hello".to_string()).await.unwrap();
+//! assert_eq!(res, "HELLO".to_string());
 //! # })
 //! ```
 //!
@@ -46,40 +50,42 @@
 //! For this reason, you can specify a transformer function, that will
 //! transform incoming requests before sending them to the cache provider.
 //!
-//! For example, to cache based on the URI path of `Request`s:
-//!
 //! ```rust
-//! use http::{Request, Response, StatusCode};
-//! use tower::{ServiceBuilder, service_fn};
+//! use std::convert::Infallible;
+//! use tower::{Service, ServiceBuilder, service_fn};
 //! use tower_cache::{
 //!     CacheLayer,
-//! lru::LruProvider,
+//!     lru::LruProvider,
 //! };
-//!
-//! // Service handler function
-//! async fn handler(_req: Request<()>) -> Response<()> {
-//!     Response::builder()
-//!         .status(StatusCode::OK)
-//!         .body(())
-//!         .unwrap()
+//! async fn handler(req: String) -> Result<String, Infallible> {
+//!     Ok(req.to_uppercase())
 //! }
-//!
-//! // Transform a Request into the path as a String
-//! fn transform_req(req: Request<()>) -> String {
-//!     req.uri().path().to_string()
+//! 
+//! fn transform_req(req: String) -> usize {
+//!     req.len()
 //! }
 //!
 //! // Initialize the cache provider service
-//! let lru_provider = LruProvider::new::<String, Response<()>>(20);
-//!
-//! // Create a cache layer with a transformer function
+//! let lru_provider = LruProvider::new::<usize, String>(20);
+//! 
 //! let cache_layer = CacheLayer::new(lru_provider)
 //!     .with_transformer(transform_req);
 //!
 //! // Wrap the service with CacheLayer.
-//! let my_service = ServiceBuilder::new()
+//! let mut my_service = ServiceBuilder::new()
 //!     .layer(cache_layer)
 //!     .service(service_fn(handler));
+//!
+//! # tokio_test::block_on(async move {
+//! // Call the service
+//! let res = my_service.call("Hello".to_string()).await.unwrap();
+//! assert_eq!(res, "HELLO".to_string());
+//! 
+//! // Since this uses a transformer that takes the length of the String,
+//! // we will get the same result for a string of similar length.
+//! let res = my_service.call("Salut".to_string()).await.unwrap();
+//! assert_eq!(res, "HELLO".to_string());
+//! # })
 //! ```
 //!
 //! ## Creating cache providers
