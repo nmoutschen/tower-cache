@@ -1,10 +1,12 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Cache layer for `tower::Service`s"><meta name="keywords" content="rust, rustlang, rust-lang, tower_cache"><title>tower_cache - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script src="../crates.js"></script><script defer src="../main.js"></script>
     <noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../tower_cache/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.png" alt="logo"></div>
-        </a><h2 class="location">Crate tower_cache</h2><div class="block version"><div class="narrow-helper"></div><p>Version 0.0.1</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all tower_cache's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li></ul></div><div id="sidebar-vars" data-name="tower_cache" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../tower_cache/index.html"><img class="rust-logo" src="../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">tower_cache</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/tower_cache/lib.rs.html#1-293" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="cache-layer-for-towerservices" class="section-header"><a href="#cache-layer-for-towerservices">Cache layer for <code>tower::Service</code>s</a></h2>
+        </a><h2 class="location">Crate tower_cache</h2><div class="block version"><div class="narrow-helper"></div><p>Version 0.0.1</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all tower_cache's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li></ul></div><div id="sidebar-vars" data-name="tower_cache" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../tower_cache/index.html"><img class="rust-logo" src="../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">tower_cache</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/tower_cache/lib.rs.html#1-404" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="cache-layer-for-towerservices" class="section-header"><a href="#cache-layer-for-towerservices">Cache layer for <code>tower::Service</code>s</a></h2>
 <p><a href="struct.CacheLayer.html" title="CacheLayer"><code>CacheLayer</code></a> is a tower Layer that provides caches for <code>Service</code>s by using
 another service to handle the cache. This allows the usage of asynchronous
 and external caches.</p>
 <h3 id="usage" class="section-header"><a href="#usage">Usage</a></h3>
+<p>Here is a sample implementation using an LRU cache as cache provider:</p>
+
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::convert::Infallible</span>;
 <span class="kw">use</span> <span class="ident">tower</span>::{<span class="ident">ServiceBuilder</span>, <span class="ident">service_fn</span>};
 <span class="kw">use</span> <span class="ident">tower_cache</span>::{
@@ -16,15 +18,51 @@ and external caches.</p>
 }
 
 <span class="comment">// Initialize the cache provider service</span>
-<span class="kw">let</span> <span class="ident">lru_provider</span> <span class="op">=</span> <span class="ident">LruProvider</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="number">20</span>);
-
-<span class="comment">// Initialize the service</span>
-<span class="kw">let</span> <span class="ident">my_service</span> <span class="op">=</span> <span class="ident">service_fn</span>(<span class="ident">handler</span>);
+<span class="kw">let</span> <span class="ident">lru_provider</span> <span class="op">=</span> <span class="ident">LruProvider::new</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>(<span class="number">20</span>);
 
 <span class="comment">// Wrap the service with CacheLayer.</span>
 <span class="kw">let</span> <span class="ident">my_service</span> <span class="op">=</span> <span class="ident">ServiceBuilder::new</span>()
-    .<span class="ident">layer</span>(<span class="ident">CacheLayer</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">String</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">lru_provider</span>))
-    .<span class="ident">service</span>(<span class="ident">handler</span>);</code></pre></div>
+    .<span class="ident">layer</span>(<span class="ident">CacheLayer::new</span>(<span class="ident">lru_provider</span>))
+    .<span class="ident">service</span>(<span class="ident">service_fn</span>(<span class="ident">handler</span>));</code></pre></div>
+<h4 id="with-request-transformer" class="section-header"><a href="#with-request-transformer">With request transformer</a></h4>
+<p>Certain cache providers might require specific trait bounds to be met in
+order to cache that data. Or you might want to cache based on specific
+fields in a struct, such as a request ID, URI path, etc.</p>
+<p>For this reason, you can specify a transformer function, that will
+transform incoming requests before sending them to the cache provider.</p>
+<p>For example, to cache based on the URI path of <code>Request</code>s:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">http</span>::{<span class="ident">Request</span>, <span class="ident">Response</span>, <span class="ident">StatusCode</span>};
+<span class="kw">use</span> <span class="ident">tower</span>::{<span class="ident">ServiceBuilder</span>, <span class="ident">service_fn</span>};
+<span class="kw">use</span> <span class="ident">tower_cache</span>::{
+    <span class="ident">CacheLayer</span>,
+<span class="ident">lru::LruProvider</span>,
+};
+
+<span class="comment">// Service handler function</span>
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handler</span>(<span class="ident">_req</span>: <span class="ident">Request</span><span class="op">&lt;</span>()<span class="op">&gt;</span>) -&gt; <span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="ident">Response::builder</span>()
+        .<span class="ident">status</span>(<span class="ident">StatusCode::OK</span>)
+        .<span class="ident">body</span>(())
+        .<span class="ident">unwrap</span>()
+}
+
+<span class="comment">// Transform a Request into the path as a String</span>
+<span class="kw">fn</span> <span class="ident">transform_req</span>(<span class="ident">req</span>: <span class="ident">Request</span><span class="op">&lt;</span>()<span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
+    <span class="ident">req</span>.<span class="ident">uri</span>().<span class="ident">path</span>().<span class="ident">to_string</span>()
+}
+
+<span class="comment">// Initialize the cache provider service</span>
+<span class="kw">let</span> <span class="ident">lru_provider</span> <span class="op">=</span> <span class="ident">LruProvider::new</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Response</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="number">20</span>);
+
+<span class="comment">// Create a cache layer with a transformer function</span>
+<span class="kw">let</span> <span class="ident">cache_layer</span> <span class="op">=</span> <span class="ident">CacheLayer::new</span>(<span class="ident">lru_provider</span>)
+    .<span class="ident">with_transformer</span>(<span class="ident">transform_req</span>);
+
+<span class="comment">// Wrap the service with CacheLayer.</span>
+<span class="kw">let</span> <span class="ident">my_service</span> <span class="op">=</span> <span class="ident">ServiceBuilder::new</span>()
+    .<span class="ident">layer</span>(<span class="ident">cache_layer</span>)
+    .<span class="ident">service</span>(<span class="ident">service_fn</span>(<span class="ident">handler</span>));</code></pre></div>
 <h3 id="creating-cache-providers" class="section-header"><a href="#creating-cache-providers">Creating cache providers</a></h3>
 <p>A cache provider is a <a href="https://docs.rs/tower-service/0.3.1/tower_service/trait.Service.html" title="tower::Service"><code>tower::Service</code></a> that takes a <a href="enum.ProviderRequest.html" title="ProviderRequest"><code>ProviderRequest</code></a>
 as request and returns a <a href="enum.ProviderResponse.html" title="ProviderResponse"><code>ProviderResponse</code></a>.</p>
@@ -37,5 +75,7 @@ as request and returns a <a href="enum.ProviderResponse.html" title="ProviderRes
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.Error.html" title="tower_cache::Error enum">Error</a></div><div class="item-right docblock-short"><p>Error returned by the <a href="struct.CacheLayer.html" title="CacheLayer"><code>CacheLayer</code></a></p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.ProviderRequest.html" title="tower_cache::ProviderRequest enum">ProviderRequest</a></div><div class="item-right docblock-short"><p>Requests sent to the cache provider</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.ProviderResponse.html" title="tower_cache::ProviderResponse enum">ProviderResponse</a></div><div class="item-right docblock-short"><p>Responses sent by the cache provider</p>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Transform.html" title="tower_cache::Transform trait">Transform</a></div><div class="item-right docblock-short"><p>Request transformation trait</p>
 </div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="tower_cache" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
 </body></html>
