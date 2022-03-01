@@ -404,6 +404,8 @@
 <span id="402">402</span>
 <span id="403">403</span>
 <span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">unreachable_pub</span>)]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">feature</span>(<span class="ident">doc_cfg</span>))]</span>
 
@@ -419,7 +421,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use std::convert::Infallible;</span>
-<span class="doccomment">//! use tower::{ServiceBuilder, service_fn};</span>
+<span class="doccomment">//! use tower::{Service, ServiceBuilder, service_fn};</span>
 <span class="doccomment">//! use tower_cache::{</span>
 <span class="doccomment">//!     CacheLayer,</span>
 <span class="doccomment">//!     lru::LruProvider,</span>
@@ -432,9 +434,15 @@
 <span class="doccomment">//! let lru_provider = LruProvider::new::&lt;String, String&gt;(20);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Wrap the service with CacheLayer.</span>
-<span class="doccomment">//! let my_service = ServiceBuilder::new()</span>
+<span class="doccomment">//! let mut my_service = ServiceBuilder::new()</span>
 <span class="doccomment">//!     .layer(CacheLayer::new(lru_provider))</span>
 <span class="doccomment">//!     .service(service_fn(handler));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # tokio_test::block_on(async move {</span>
+<span class="doccomment">//! // Call the service</span>
+<span class="doccomment">//! let res = my_service.call(&quot;Hello&quot;.to_string()).await.unwrap();</span>
+<span class="doccomment">//! assert_eq!(res, &quot;HELLO&quot;.to_string());</span>
+<span class="doccomment">//! # })</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### With request transformer</span>
@@ -785,8 +793,7 @@
         }
 
         <span class="kw">let</span> <span class="ident">cache</span> <span class="op">=</span> <span class="ident">SimpleCache::default</span>();
-        <span class="kw">let</span> <span class="ident">cache_layer</span> <span class="op">=</span> <span class="ident">CacheLayer::new</span>(<span class="ident">cache</span>.<span class="ident">clone</span>())
-            .<span class="ident">with_transformer</span>(<span class="ident">transform</span>);
+        <span class="kw">let</span> <span class="ident">cache_layer</span> <span class="op">=</span> <span class="ident">CacheLayer::new</span>(<span class="ident">cache</span>.<span class="ident">clone</span>()).<span class="ident">with_transformer</span>(<span class="ident">transform</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">service</span> <span class="op">=</span> <span class="ident">ServiceBuilder::new</span>()
             .<span class="ident">layer</span>(<span class="ident">cache_layer</span>)
@@ -799,10 +806,7 @@
         {
             <span class="kw">let</span> <span class="ident">inner_cache</span> <span class="op">=</span> <span class="ident">cache</span>.<span class="ident">cache</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
             <span class="macro">assert_eq!</span>(<span class="ident">inner_cache</span>.<span class="ident">len</span>(), <span class="number">1</span>);
-            <span class="macro">assert_eq!</span>(
-                <span class="ident">inner_cache</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">5</span>),
-                <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">10</span>)
-            );
+            <span class="macro">assert_eq!</span>(<span class="ident">inner_cache</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">5</span>), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">10</span>));
         }
 
         <span class="prelude-val">Ok</span>(())
