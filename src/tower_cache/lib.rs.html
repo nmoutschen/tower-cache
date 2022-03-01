@@ -406,6 +406,12 @@
 <span id="404">404</span>
 <span id="405">405</span>
 <span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">unreachable_pub</span>)]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">feature</span>(<span class="ident">doc_cfg</span>))]</span>
 
@@ -442,6 +448,10 @@
 <span class="doccomment">//! // Call the service</span>
 <span class="doccomment">//! let res = my_service.call(&quot;Hello&quot;.to_string()).await.unwrap();</span>
 <span class="doccomment">//! assert_eq!(res, &quot;HELLO&quot;.to_string());</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // Calling the service again will use the cache instead</span>
+<span class="doccomment">//! let res = my_service.call(&quot;Hello&quot;.to_string()).await.unwrap();</span>
+<span class="doccomment">//! assert_eq!(res, &quot;HELLO&quot;.to_string());</span>
 <span class="doccomment">//! # })</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -454,40 +464,42 @@
 <span class="doccomment">//! For this reason, you can specify a transformer function, that will</span>
 <span class="doccomment">//! transform incoming requests before sending them to the cache provider.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! For example, to cache based on the URI path of `Request`s:</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use http::{Request, Response, StatusCode};</span>
-<span class="doccomment">//! use tower::{ServiceBuilder, service_fn};</span>
+<span class="doccomment">//! use std::convert::Infallible;</span>
+<span class="doccomment">//! use tower::{Service, ServiceBuilder, service_fn};</span>
 <span class="doccomment">//! use tower_cache::{</span>
 <span class="doccomment">//!     CacheLayer,</span>
-<span class="doccomment">//! lru::LruProvider,</span>
+<span class="doccomment">//!     lru::LruProvider,</span>
 <span class="doccomment">//! };</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Service handler function</span>
-<span class="doccomment">//! async fn handler(_req: Request&lt;()&gt;) -&gt; Response&lt;()&gt; {</span>
-<span class="doccomment">//!     Response::builder()</span>
-<span class="doccomment">//!         .status(StatusCode::OK)</span>
-<span class="doccomment">//!         .body(())</span>
-<span class="doccomment">//!         .unwrap()</span>
+<span class="doccomment">//! async fn handler(req: String) -&gt; Result&lt;String, Infallible&gt; {</span>
+<span class="doccomment">//!     Ok(req.to_uppercase())</span>
 <span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Transform a Request into the path as a String</span>
-<span class="doccomment">//! fn transform_req(req: Request&lt;()&gt;) -&gt; String {</span>
-<span class="doccomment">//!     req.uri().path().to_string()</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! fn transform_req(req: String) -&gt; usize {</span>
+<span class="doccomment">//!     req.len()</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Initialize the cache provider service</span>
-<span class="doccomment">//! let lru_provider = LruProvider::new::&lt;String, Response&lt;()&gt;&gt;(20);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Create a cache layer with a transformer function</span>
+<span class="doccomment">//! let lru_provider = LruProvider::new::&lt;usize, String&gt;(20);</span>
+<span class="doccomment">//! </span>
 <span class="doccomment">//! let cache_layer = CacheLayer::new(lru_provider)</span>
 <span class="doccomment">//!     .with_transformer(transform_req);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Wrap the service with CacheLayer.</span>
-<span class="doccomment">//! let my_service = ServiceBuilder::new()</span>
+<span class="doccomment">//! let mut my_service = ServiceBuilder::new()</span>
 <span class="doccomment">//!     .layer(cache_layer)</span>
 <span class="doccomment">//!     .service(service_fn(handler));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # tokio_test::block_on(async move {</span>
+<span class="doccomment">//! // Call the service</span>
+<span class="doccomment">//! let res = my_service.call(&quot;Hello&quot;.to_string()).await.unwrap();</span>
+<span class="doccomment">//! assert_eq!(res, &quot;HELLO&quot;.to_string());</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! // Since this uses a transformer that takes the length of the String,</span>
+<span class="doccomment">//! // we will get the same result for a string of similar length.</span>
+<span class="doccomment">//! let res = my_service.call(&quot;Salut&quot;.to_string()).await.unwrap();</span>
+<span class="doccomment">//! assert_eq!(res, &quot;HELLO&quot;.to_string());</span>
+<span class="doccomment">//! # })</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Creating cache providers</span>
