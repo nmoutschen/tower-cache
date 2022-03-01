@@ -7,7 +7,7 @@
 //!
 //! ```rust
 //! use std::convert::Infallible;
-//! use tower::{ServiceBuilder, service_fn};
+//! use tower::{Service, ServiceBuilder, service_fn};
 //! use tower_cache::{
 //!     CacheLayer,
 //!     lru::LruProvider,
@@ -20,9 +20,15 @@
 //! let lru_provider = LruProvider::new::<String, String>(20);
 //!
 //! // Wrap the service with CacheLayer.
-//! let my_service = ServiceBuilder::new()
+//! let mut my_service = ServiceBuilder::new()
 //!     .layer(CacheLayer::new(lru_provider))
 //!     .service(service_fn(handler));
+//!
+//! # tokio_test::block_on(async move {
+//! // Call the service
+//! let res = my_service.call("Hello".to_string()).await.unwrap();
+//! assert_eq!(res, "HELLO".to_string());
+//! # })
 //! ```
 //!
 
@@ -52,11 +58,11 @@ where
 
 impl<'a> LruProvider<'a, (), ()> {
     /// Create a new LRU cache provider with the desired capacity
-    pub fn new<K, V>(capacity: usize) -> Self
+    pub fn new<K, V>(capacity: usize) -> LruProvider<'a, K, V>
     where
         K: Eq + Hash,
     {
-        Self {
+        LruProvider {
             inner: Arc::new(Mutex::new(LruCache::new(capacity))),
             _phantom: PhantomData,
         }
